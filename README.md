@@ -30,7 +30,7 @@ After you're finished please remove all the comments and instructions!
   <img src="./src/images/s_logo.png" alt="logo" width="140"  height="auto" />
   <br/>
 
-  <h3><b>Smart API Leaderboard</b></h3>
+  <h3><b>JS Capstone Project</b></h3>
 
 </div>
 

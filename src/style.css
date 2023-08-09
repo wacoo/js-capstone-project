@@ -14,7 +14,7 @@ body {
   width: 100%;
   height: 50px;
   background-color: lightblue;
-  text-shadow: 2px 2px blue, 0 0 5px #0000FF;
+  text-shadow: 2px 2px rgb(255, 187, 0), 0 0 5px #0000FF;
 }
 
 .header ul {
@@ -31,26 +31,34 @@ body {
 
 .header a {
   text-decoration: none;
-  color: yellow;  
+  color: rgb(24, 24, 23);  
 }
 
 
 /*===========*/
 
 #parent {
+  margin: 24px 0;
   display: grid;
   grid-template-columns: 200px 200px 200px 200px;
+  column-gap: 24px;
   justify-content: center;
   font-family: sans-serif;
 }
 
-#parent .like {
+#like i {
   margin-top: 5px;
   text-align: right;
   color: red;
   /* outline: blue solid 2px; */
 }
 
+.name {
+  display: flex;
+  align-items: center;
+  margin: 12px;
+  /* outline: red solid 2px; */
+}
 .no-of-likes {
   font-size: 11px;
   padding: 5px 0;
@@ -84,15 +92,19 @@ margin: 5px;
 }
 
 .name-like-parent {
+  width: 100%;
   display: flex;
-  margin: 5px;
+  justify-content: space-between;
+  background-color: aquamarine;
 }
 
 .like-parent {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 5px;
+  justify-content: center;
+  margin-right: 12px;
+  /* outline: blue solid 2px; */
 }
 
 .comment {
@@ -112,6 +124,6 @@ margin: 5px;
 
 .footer {
   position: absolute;
-  bottom: 0;
+  bottom: -75px;
 }
 

@@ -9,3 +9,10 @@ const dom = new DOMManipulator();
 //img.alt = "Placeholder";
 
 dom.displayItems();
+const data = {
+    "item_id": "Under the dome",
+    "username": "Bish",
+    "comment": "This is a test comment"
+}
+dom.addComment(data);
+//dom.createApp();

@@ -1,11 +1,12 @@
 import APILoader from "./api_loader.js";
+
 import pikachu from "../images/pikachu.jpg";
 import  Spearow from "../images/Spearow.png";
 import Fearow from "../images/Fearow.png";
 import Ekans from "../images/Ekans.png";
 import  Arbok from "../images/Arbok.png";
-import Pikachu from "../images/pikachu.jpg";
-/*import Raichu from "../images/Raichu.png";
+import Pikachu from "../images/Pikachu.png";
+import Raichu from "../images/Raichu.png";
 import Sandshrew from "../images/Sandshrew.png";
 import Sandslash from "../images/Sandslash.png";
 import NidoranF from "../images/NidoranF.png";
@@ -19,42 +20,52 @@ import Clefable from "../images/Clefable.png";
 import Vulpix from "../images/Vulpix.png";
 import Ninetales from "../images/Ninetales.png";
 import Jigglypuff from "../images/Jigglypuff.png";
-import Wigglytuff from "../images/Wigglytuff.png";*/
+import Wigglytuff from "../images/Wigglytuff.png";
 const parent = document.getElementById("parent");
+
+const loader = new APILoader();
 
 class DOMManipulator {
   displayItems = async () => {
-    const loader = new APILoader();
     loader.url = "https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20";
     const data = await loader.getData();
-    console.log(data.results);
     data.results.forEach((pokimon) => {
       const card = this.createCard(pokimon);
     });
   };
 
-  createCard(pokimon) {
+  createCard = async (pokimon) => {
     const createData = {
-      card: ["div", ["card"], null],
-      cardWrapper: ["div", ["card-wrapper"], null],
-      pokImage: ["img", ["pok-image"], "pok-image"],
-      nameLikeParent: ["div", ["name-like-parent"], null],
-      span: ["span", null, null],
-      likeParent: ["div", ["like-parent"], null],
-      like: ["i", ["like", "fa", "fa-heart"], null],
-      noOfLikes: ["span", ["no-of-likes"], null],
-      comment: ["button", ["comment"], null],
+      card: ['div', ['card'], null],
+      cardWrapper: ['div', ['card-wrapper'], null],
+      pokImage: ['img', ['pok-image'], 'pok-image'],
+      nameLikeParent: ['div', ['name-like-parent'], null],
+      span: ['span', ['name'], null],
+      likeParent: ['div', ['like-parent'], null],
+      like: ['a', null, 'like'],
+      i: ['i', ['fa', 'fa-heart'], null],
+      noOfLikes: ['span', ['no-of-likes'], null],
+      comment: ['button', ['comment'], null],
     };
     const elem = this.batchCreateElements(createData);
 
     elem.pokImage.src = pikachu;
     const name = pokimon.name.charAt(0).toUpperCase() + pokimon.name.slice(1);
-    elem.span.innerHTML = name;
+    elem.span.innerHTML = name;    
+    elem.noOfLikes.innerHTML = "0 likes";
+    this.likeItem(elem.like, name);
 
-    this.setImageSource(elem, name);
+    const likes = await this.loadLikes();
+    likes.forEach(like => {
+      if (like.item_id === name) {
+        elem.noOfLikes.innerHTML = `${like.likes} likes`;
+      }
+    });
     
-    elem.noOfLikes.innerHTML = "5 likes";
+    this.setImageSource(elem, name, likes);
+    
     elem.comment.innerHTML = "Comments";
+    elem.like.href="";
     const appendData = [
       { child: elem.cardWrapper, parent: elem.card },
       { child: elem.pokImage, parent: elem.cardWrapper },
@@ -62,11 +73,39 @@ class DOMManipulator {
       { child: elem.span, parent: elem.nameLikeParent },
       { child: elem.likeParent, parent: elem.nameLikeParent },
       { child: elem.like, parent: elem.likeParent },
+      { child: elem.i, parent: elem.like },
       { child: elem.noOfLikes, parent: elem.likeParent },
       { child: elem.comment, parent: elem.cardWrapper },
     ];
 
     this.batchAppendElements(appendData);
+  }
+
+  likeItem (likebutton, id) {
+    likebutton.addEventListener('click', async (event) => {
+      event.preventDefault();
+      loader.url= 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/OPvtcYAiYtOGk6E05HZz/likes';
+      const itemId = {
+        'item_id': id
+      }
+      const likes = await loader.setData(itemId);
+      if(likes === 201) {
+        const lk = likebutton.parentNode.childNodes[1].innerHTML.split(' ')[0];
+        likebutton.parentNode.childNodes[1].innerHTML = `${Number(lk) + 1} likes`;
+      }
+    });
+  }
+
+  loadLikes = async () => {
+    loader.url= 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/OPvtcYAiYtOGk6E05HZz/likes';
+    const likes = await loader.getData();
+    return likes;
+  }
+
+  addComment = (commentData) => {
+    loader.url= 'https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/OPvtcYAiYtOGk6E05HZz/comments';
+    const comment = loader.setData(commentData);
+    console.log(comment);
   }
 
   createElement = (type, clss, id) => {
